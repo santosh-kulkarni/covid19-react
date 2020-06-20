@@ -70,7 +70,7 @@ export default function TableData() {
             </TableHead>
             <TableBody>
                {
-                   stateLatestData.length > 0 && districtWiseLatestData["KA"] && stateLatestData.map((item, index) => {
+                   stateLatestData.map((item, index) => {
                        return (
                            <RowData key={index} item = {item} districtWiseData={districtWiseLatestData[item.state]} />
                        )
