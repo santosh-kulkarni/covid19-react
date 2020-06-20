@@ -1,9 +1,17 @@
 export const keys = (obj) => {
-    return Object.keys(obj);
+    if(obj) {
+        return Object.keys(obj);
+    } else {
+        return [];
+    }
 }
 
 export const entries = (obj) => {
-    return Object.entries(obj);
+    if(obj) {
+        return Object.entries(obj);
+    } else {
+        return [];
+    }
 }
 
 export const keysLength = (obj) => {
@@ -20,6 +28,6 @@ export const getValue = (val) => {
         return val;
     }
     else {
-        return "";
+        return 0;
     }
 }

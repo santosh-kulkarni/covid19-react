@@ -13,6 +13,7 @@ import TableRow from '@material-ui/core/TableRow';
 export default function TableData() {
 
     const [stateLatestData, setStateLatestData] = React.useState([]);
+    const [districtWiseLatestData, setDistrictWiseLatestData] = React.useState({});
 
     const sortFunction = (a, b) => {
         if (a.stateTotal.total.confirmed < b.stateTotal.total.confirmed) {
@@ -38,8 +39,16 @@ export default function TableData() {
                         });
                     }
                 });
-                tempStateLatestData1 = tempStateLatestData1.sort(sortFunction);
+                // tempStateLatestData1 = tempStateLatestData1.sort(sortFunction);
                 setStateLatestData(tempStateLatestData1);
+            })
+            .catch((error) => {
+
+            });
+
+        axios.get("https://api.covid19india.org/v3/min/data.min.json")
+            .then((response) => {
+               setDistrictWiseLatestData(response.data);
             })
             .catch((error) => {
 
@@ -53,17 +62,17 @@ export default function TableData() {
                 <TableRow>
                     <TableCell />
                     <TableCell>State</TableCell>
-                    <TableCell align="right">Total Cases</TableCell>
-                    <TableCell align="right">Actice</TableCell>
-                    <TableCell align="right">Recovered</TableCell>
-                    <TableCell align="right">Deceased</TableCell>
+                    <TableCell>Total Cases</TableCell>
+                    <TableCell>Actice</TableCell>
+                    <TableCell>Recovered</TableCell>
+                    <TableCell>Deceased</TableCell>
                 </TableRow>
             </TableHead>
             <TableBody>
                {
-                   stateLatestData.map((item, index) => {
+                   stateLatestData.length > 0 && districtWiseLatestData["KA"] && stateLatestData.map((item, index) => {
                        return (
-                           <RowData key={index} item = {item} />
+                           <RowData key={index} item = {item} districtWiseData={districtWiseLatestData[item.state]} />
                        )
                    })
                }
