@@ -7,24 +7,26 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import Paper from '@material-ui/core/Paper';
 import TotalCases from "./TotalCases";
+import Notification from "./Notification";
 import RowData from "./RowData";
 import { entries, getLastObject } from "./helperFunctions";
 import TableRow from '@material-ui/core/TableRow';
 
-export default function TableData() {
+export default function TableData(props) {
 
+    const {logStatus} = props;
     const [stateLatestData, setStateLatestData] = React.useState({});
     const [districtWiseLatestData, setDistrictWiseLatestData] = React.useState({});
 
-    const sortFunction = (a, b) => {
-        if (a.stateTotal.total.confirmed < b.stateTotal.total.confirmed) {
-            return 1;
-        }
-        if (a.stateTotal.total.confirmed > b.stateTotal.total.confirmed) {
-            return -1;
-        }
-        return 0;
-    }
+    // const sortFunction = (a, b) => {
+    //     if (a.stateTotal.total.confirmed < b.stateTotal.total.confirmed) {
+    //         return 1;
+    //     }
+    //     if (a.stateTotal.total.confirmed > b.stateTotal.total.confirmed) {
+    //         return -1;
+    //     }
+    //     return 0;
+    // }
 
 
     React.useEffect(() => {
@@ -48,6 +50,8 @@ export default function TableData() {
     return (
         <React.Fragment>
             <TotalCases stateLatestData={getLastObject(stateLatestData["TT"])} /> 
+            <br />
+            <Notification logStatus={logStatus} />
             <br />
             <TableContainer component={Paper}>
                 <Table aria-label="collapsible table">

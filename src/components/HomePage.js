@@ -24,6 +24,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function HomePage() {
 
+    const [logStatus, setLogStatus] = React.useState(false);
     const classes = useStyles();
 
     return (
@@ -35,7 +36,7 @@ export default function HomePage() {
                     </Typography>
                     <IconButton aria-label="show 17 new notifications" color="inherit">
                         <Badge badgeContent={5} color="secondary">
-                            <NotificationsIcon />
+                            <NotificationsIcon onClick={() => setLogStatus(!logStatus)} />
                         </Badge>
                     </IconButton>
                 </Toolbar>
@@ -45,7 +46,7 @@ export default function HomePage() {
                 <Grid item xs={2}>
                 </Grid>
                 <Grid item xs={8}>
-                   <TableData />
+                   <TableData logStatus={logStatus} />
                 </Grid>
                 <Grid item xs={2}>
                 </Grid>
