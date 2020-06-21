@@ -28,13 +28,8 @@ export const getLastObject = (obj) => {
     }
 }
 
-export const getValue = (val) => {
-    if (val) {
-        return val;
-    }
-    else {
-        return 0;
-    }
+export const getValue = (item, name) => {
+    return (item && item.total && item.total[name]) || ""
 }
 
 export const getTotalValue = (item, name) => {

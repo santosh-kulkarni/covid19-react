@@ -36,12 +36,12 @@ export default function RowData(props) {
                                 </Typography>
                             }
                             <Typography noWrap>
-                                {getValue(item.total.confirmed)}
+                                {getValue(item, "confirmed")}
                             </Typography>
                         </TableCell>
                         <TableCell>
                             <Typography noWrap>
-                                {getValue(item.total.confirmed - item.total.recovered)}
+                                {getValue(item, "confirmed") - getValue(item, "recovered")}
                             </Typography>
                         </TableCell>
                         <TableCell>
@@ -52,7 +52,7 @@ export default function RowData(props) {
                                 </Typography>
                             }
                             <Typography noWrap>
-                                {getValue(item.total.recovered)}
+                                {getValue(item, "recovered")}
                             </Typography>
                         </TableCell>
                         <TableCell>
@@ -64,7 +64,7 @@ export default function RowData(props) {
                             }
 
                             <Typography noWrap>
-                                {getValue(item.total.deceased)}
+                                {getValue(item, "deceased")}
                             </Typography>
                         </TableCell>
                     </TableRow>

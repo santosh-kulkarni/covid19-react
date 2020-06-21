@@ -38,7 +38,7 @@ export default function DistrictData(props) {
                                         entries(districtWiseData.districts).map((item, index) => {
                                             return (
                                                 <TableRow>
-                                                    <TableCell>{getValue(item[0])}</TableCell>
+                                                    <TableCell>{item[0] ? item[0] : ""}</TableCell>
                                                     <TableCell>
                                                         {
                                                             getDistrictDeltaValue(item[1], 'confirmed') !== "" && <Typography color="error" noWrap>
@@ -47,12 +47,12 @@ export default function DistrictData(props) {
                                                             </Typography>
                                                         }
                                                         <Typography noWrap>
-                                                            {getValue(item[1].total.confirmed)}
+                                                            {getValue(item[1], "confirmed")}
                                                         </Typography>
                                                     </TableCell>
                                                     <TableCell>
                                                         <Typography noWrap>
-                                                            {getValue(item[1].total.confirmed - item[1].total.recovered)}
+                                                            {getValue(item[1], "confirmed") - getValue(item[1], "recovered")}
                                                         </Typography>
                                                     </TableCell>
                                                     <TableCell>
@@ -63,7 +63,7 @@ export default function DistrictData(props) {
                                                             </Typography>
                                                         }
                                                         <Typography noWrap>
-                                                            {getValue(item[1].total.recovered)}
+                                                            {getValue(item[1], "recovered")}
                                                         </Typography>
                                                     </TableCell>
                                                     <TableCell>
@@ -74,7 +74,7 @@ export default function DistrictData(props) {
                                                             </Typography>
                                                         }
                                                         <Typography noWrap>
-                                                            {getValue(item[1].total.deceased)}
+                                                            {getValue(item[1], "deceased")}
                                                         </Typography>
                                                     </TableCell>
                                                 </TableRow>
