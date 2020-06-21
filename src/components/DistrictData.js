@@ -2,10 +2,12 @@ import React from "react";
 import TableHead from '@material-ui/core/TableHead';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
+import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import TableCell from '@material-ui/core/TableCell';
+import { green, red } from '@material-ui/core/colors';
 import TableRow from '@material-ui/core/TableRow';
 import Box from '@material-ui/core/Box';
-import { entries, getValue } from "./helperFunctions";
+import { entries, getValue, getDistrictDeltaValue } from "./helperFunctions";
 import Typography from '@material-ui/core/Typography';
 import Collapse from '@material-ui/core/Collapse';
 
@@ -37,10 +39,44 @@ export default function DistrictData(props) {
                                             return (
                                                 <TableRow>
                                                     <TableCell>{getValue(item[0])}</TableCell>
-                                                    <TableCell>{getValue(item[1].total.confirmed)}</TableCell>
-                                                    <TableCell>{getValue(item[1].total.confirmed - item[1].total.recovered)}</TableCell>
-                                                    <TableCell>{getValue(item[1].total.recovered)}</TableCell>
-                                                    <TableCell>{getValue(item[1].total.deceased)}</TableCell>
+                                                    <TableCell>
+                                                        {
+                                                            getDistrictDeltaValue(item[1], 'confirmed') !== "" && <Typography color="error" noWrap>
+                                                                <ArrowUpwardIcon style={{ color: red[500], fontSize: 15 }} />
+                                                                {getDistrictDeltaValue(item[1], 'confirmed')}
+                                                            </Typography>
+                                                        }
+                                                        <Typography noWrap>
+                                                            {getValue(item[1].total.confirmed)}
+                                                        </Typography>
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        <Typography noWrap>
+                                                            {getValue(item[1].total.confirmed - item[1].total.recovered)}
+                                                        </Typography>
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        {
+                                                            getDistrictDeltaValue(item[1], 'recovered') !== "" && <Typography style={{ color: green[500] }} noWrap>
+                                                                <ArrowUpwardIcon style={{ color: green[500], fontSize: 15 }} />
+                                                                {getDistrictDeltaValue(item[1], 'recovered')}
+                                                            </Typography>
+                                                        }
+                                                        <Typography noWrap>
+                                                            {getValue(item[1].total.recovered)}
+                                                        </Typography>
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        {
+                                                            getDistrictDeltaValue(item[1], 'deceased') !== "" && <Typography noWrap>
+                                                                <ArrowUpwardIcon style={{ fontSize: 15 }} />
+                                                                {getDistrictDeltaValue(item[1], 'deceased')}
+                                                            </Typography>
+                                                        }
+                                                        <Typography noWrap>
+                                                            {getValue(item[1].total.deceased)}
+                                                        </Typography>
+                                                    </TableCell>
                                                 </TableRow>
                                             )
                                         })

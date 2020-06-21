@@ -20,7 +20,12 @@ export const keysLength = (obj) => {
 
 export const getLastObject = (obj) => {
     const stateArray = entries(obj);
-    return stateArray[stateArray.length - 1][1];
+    if(stateArray.length > 0) {
+        return stateArray[stateArray.length - 1][1];
+    }
+    else {
+        return undefined;
+    }
 }
 
 export const getValue = (val) => {
@@ -30,4 +35,16 @@ export const getValue = (val) => {
     else {
         return 0;
     }
+}
+
+export const getTotalValue = (item, name) => {
+    return (item && item.total && item.total[name]) || ""
+}
+
+export const getDeltaValue = (item, name) => {
+    return (item && item.delta && item.delta[name]) || ""
+}
+
+export const getDistrictDeltaValue = (item, name) => {
+    return (item && item.delta && item.delta[name]) || ""
 }
