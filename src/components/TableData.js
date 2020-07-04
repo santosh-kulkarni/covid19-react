@@ -12,7 +12,7 @@ import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import Notification from "./Notification";
 import RowData from "./RowData";
 import Typography from '@material-ui/core/Typography';
-import { entries, getLastObject } from "./helperFunctions";
+import { entries, getLastObject, keys } from "./helperFunctions";
 import TableRow from '@material-ui/core/TableRow';
 
 export default function TableData(props) {
@@ -26,20 +26,67 @@ export default function TableData(props) {
     })
 
     const handleRowSort = (column) => {
-        if(arrowStatus.column === column) {
-            setArrowStatus({...arrowStatus, direction: arrowStatus.direction === "down" ? "up" : "down"})
+        if (arrowStatus.column === column) {
+            const temp = entries(stateLatestData).map(element => {
+                return {
+                    state: element[0],
+                    stateData: element[1]
+                }
+            });
+            const sortOrderChangeData = temp.sort((a, b) => {
+                if (getLastObject(a.stateData).total[column] < getLastObject(b.stateData).total[column]) {
+                    return arrowStatus.direction === 'up' ?  1 : -1;
+                }
+                else if (getLastObject(a.stateData).total[column] > getLastObject(b.stateData).total[column]) {
+                    return arrowStatus.direction === 'up' ?  -1 : 1;
+                } else {
+                    return 0;
+                }
+            });
+            const tempLatestData = {};
+            sortOrderChangeData.forEach(ele => {
+                tempLatestData[ele.state] = ele.stateData
+            });
+            setStateLatestData(tempLatestData);
+            setArrowStatus({ ...arrowStatus, direction: arrowStatus.direction === "down" ? "up" : "down" })
         }
         else {
+            const temp = entries(stateLatestData).map(element => {
+                return {
+                    state: element[0],
+                    stateData: element[1]
+                }
+            });
+            const sortOrderChangeData = temp.sort((a, b) => {
+                if (getLastObject(a.stateData).total[column] < getLastObject(b.stateData).total[column]) {
+                    return 1;
+                }
+                else if (getLastObject(a.stateData).total[column] > getLastObject(b.stateData).total[column]) {
+                    return -1;
+                } else {
+                    return 0;
+                }
+            });
+            const tempLatestData = {};
+            sortOrderChangeData.forEach(ele => {
+                tempLatestData[ele.state] = ele.stateData
+            });
+            setStateLatestData(tempLatestData);
             setArrowStatus({
                 column: column,
                 direction: "down"
-            })
+            });
         }
     }
 
     React.useEffect(() => {
         axios.get("https://api.covid19india.org/v3/min/timeseries.min.json")
             .then((response) => {
+                entries(response.data).forEach(ele => {
+                    const temp = getLastObject(ele[1])
+                    temp.total.deceased = temp.total.deceased ? temp.total.deceased : 0;
+                    temp.total.active = temp.total.confirmed - temp.total.recovered;
+                });
                 setStateLatestData(response.data);
             })
             .catch((error) => {
@@ -48,6 +95,13 @@ export default function TableData(props) {
 
         axios.get("https://api.covid19india.org/v3/min/data.min.json")
             .then((response) => {
+                entries(response.data).forEach(ele => {
+                    entries(ele[1].districts).forEach(ele1 => {
+                        ele1[1].total.deceased = ele1[1].total.deceased ? ele1[1].total.deceased : 0;
+                        ele1[1].total.active = ele1[1].total.confirmed - ele1[1].total.recovered;
+                    })                    
+                });
+                console.log('res', response.data);
                 setDistrictWiseLatestData(response.data);
             })
             .catch((error) => {
@@ -55,12 +109,43 @@ export default function TableData(props) {
             });
     }, []);
 
-    switch(arrowStatus.state) {
-        case "total_cases" :
-            
-            break;
-        default: 
-            break;
+    const handleStateSort = () => {
+
+        if(arrowStatus.column !== 'state') {
+            const tempKeys =  keys(stateLatestData).sort((a,b) => {
+                if( a < b ) {
+                    return 1;
+                } else if( a > b ) {
+                    return -1;
+                } else {
+                    return 0;
+                }
+            });
+            const tempLatestData = {};
+            tempKeys.forEach(ele => {
+                tempLatestData[ele] = stateLatestData[ele];
+            });
+            setStateLatestData(tempLatestData);
+            setArrowStatus({column: "state", direction: "down" })
+        }
+        else {
+            const tempKeys =  keys(stateLatestData).sort((a,b) => {
+                if( a < b ) {
+                    return arrowStatus.direction === 'down' ? -1 : 1;
+                } else if( a > b ) {
+                    return arrowStatus.direction === 'down' ? 1 : -1;
+                } else {
+                    return 0;
+                }
+            });
+            const tempLatestData = {};
+            tempKeys.forEach(ele => {
+                tempLatestData[ele] = stateLatestData[ele];
+            });
+            setStateLatestData(tempLatestData);
+            setArrowStatus({column: "state", direction: arrowStatus.direction === "down" ? "up" : "down" })
+        }
+        
     }
 
     return (
@@ -74,41 +159,41 @@ export default function TableData(props) {
                     <TableHead>
                         <TableRow>
                             <TableCell />
-                            <TableCell style={{cursor: "pointer"}} onClick={() => handleRowSort("state")}>
+                            <TableCell style={{ cursor: "pointer" }} onClick={() => handleStateSort()}>
                                 <Typography variant="h5" noWrap>
-                                    State 
+                                    State
                                     {
                                         arrowStatus.column === "state" && (arrowStatus.direction === "down" ? <ArrowDownwardIcon style={{ fontSize: 25 }} /> : <ArrowUpwardIcon style={{ fontSize: 25 }} />)
                                     }
                                 </Typography>
                             </TableCell>
-                            <TableCell style={{cursor: "pointer"}} onClick={() => handleRowSort("total_cases")}>
+                            <TableCell style={{ cursor: "pointer" }} onClick={() => handleRowSort("confirmed")}>
                                 <Typography variant="h5" noWrap>
-                                    Total Cases 
+                                    Total Cases
                                     {
-                                        arrowStatus.column === "total_cases" && (arrowStatus.direction === "down" ? <ArrowDownwardIcon style={{ fontSize: 25 }} /> : <ArrowUpwardIcon style={{ fontSize: 25 }} />)
+                                        arrowStatus.column === "confirmed" && (arrowStatus.direction === "down" ? <ArrowDownwardIcon style={{ fontSize: 25 }} /> : <ArrowUpwardIcon style={{ fontSize: 25 }} />)
                                     }
                                 </Typography>
                             </TableCell>
-                            <TableCell style={{cursor: "pointer"}} onClick={() => handleRowSort("active")}>
+                            <TableCell style={{ cursor: "pointer" }} onClick={() => handleRowSort("active")}>
                                 <Typography variant="h5" noWrap>
-                                    Active 
+                                    Active
                                     {
                                         arrowStatus.column === "active" && (arrowStatus.direction === "down" ? <ArrowDownwardIcon style={{ fontSize: 25 }} /> : <ArrowUpwardIcon style={{ fontSize: 25 }} />)
                                     }
                                 </Typography>
                             </TableCell>
-                            <TableCell style={{cursor: "pointer"}} onClick={() => handleRowSort("recovered")}>
+                            <TableCell style={{ cursor: "pointer" }} onClick={() => handleRowSort("recovered")}>
                                 <Typography variant="h5" noWrap>
-                                    Recovered 
+                                    Recovered
                                     {
                                         arrowStatus.column === "recovered" && (arrowStatus.direction === "down" ? <ArrowDownwardIcon style={{ fontSize: 25 }} /> : <ArrowUpwardIcon style={{ fontSize: 25 }} />)
                                     }
                                 </Typography>
                             </TableCell>
-                            <TableCell style={{cursor: "pointer"}} onClick={() => handleRowSort("deceased")}>
+                            <TableCell style={{ cursor: "pointer" }} onClick={() => handleRowSort("deceased")}>
                                 <Typography variant="h5" noWrap>
-                                    deceased
+                                    Deceased
                                     {
                                         arrowStatus.column === "deceased" && (arrowStatus.direction === "down" ? <ArrowDownwardIcon style={{ fontSize: 25 }} /> : <ArrowUpwardIcon style={{ fontSize: 25 }} />)
                                     }

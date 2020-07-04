@@ -41,7 +41,7 @@ export default function RowData(props) {
                         </TableCell>
                         <TableCell>
                             <Typography noWrap>
-                                {getValue(item, "confirmed") - getValue(item, "recovered")}
+                                {getValue(item, "active")}
                             </Typography>
                         </TableCell>
                         <TableCell>
