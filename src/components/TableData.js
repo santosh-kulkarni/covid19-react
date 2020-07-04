@@ -95,12 +95,12 @@ export default function TableData(props) {
 
         axios.get("https://api.covid19india.org/v3/min/data.min.json")
             .then((response) => {
-                entries(response.data).forEach(ele => {
-                    entries(ele[1].districts).forEach(ele1 => {
-                        ele1[1].total.deceased = ele1[1].total.deceased ? ele1[1].total.deceased : 0;
-                        ele1[1].total.active = ele1[1].total.confirmed - ele1[1].total.recovered;
-                    })                    
-                });
+                // entries(response.data).forEach(ele => {
+                //     entries(ele[1].districts).forEach(ele1 => {
+                //         ele1[1].total.deceased = ele1[1].total.deceased ? ele1[1].total.deceased : 0;
+                //         ele1[1].total.active = ele1[1].total.confirmed - ele1[1].total.recovered;
+                //     })                    
+                // });
                 console.log('res', response.data);
                 setDistrictWiseLatestData(response.data);
             })
