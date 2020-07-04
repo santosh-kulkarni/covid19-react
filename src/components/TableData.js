@@ -101,7 +101,6 @@ export default function TableData(props) {
                 //         ele1[1].total.active = ele1[1].total.confirmed - ele1[1].total.recovered;
                 //     })                    
                 // });
-                console.log('res', response.data);
                 setDistrictWiseLatestData(response.data);
             })
             .catch((error) => {
